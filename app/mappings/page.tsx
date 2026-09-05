@@ -33,7 +33,7 @@ export default function MappingsPage() {
         setDisplayEmail('Not logged in')
       }
       else {
-        setDisplayEmail(user.email)
+        setDisplayEmail(user.email ?? "")
       }
     }
 
@@ -93,7 +93,9 @@ export default function MappingsPage() {
       setDigitInputValue('')
       setDescriptionInputValue('')
       fetchRows()
-        digitInputRef.current.focus();
+        if(digitInputRef != null) {
+          digitInputRef.current.focus()
+        }
     }
   }
 
