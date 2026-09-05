@@ -29,7 +29,7 @@ export default function MappingsPage() {
     async function loadUserDisplay() {
       const { data: { user } } = await supabase.auth.getUser()
 
-      if (user === null) {
+      if (user === null || user.email === null) {
         setDisplayEmail('Not logged in')
       }
       else {
