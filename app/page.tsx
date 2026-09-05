@@ -25,7 +25,7 @@ export default function Home() {
         setDisplayEmail('Not logged in')
       }
       else {
-        setDisplayEmail(user.email)
+        setDisplayEmail(user.email ?? "<no email>")
       }
     }
 

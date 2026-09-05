@@ -19,7 +19,7 @@ export default function MappingsPage() {
   const [inputAnswerValue, setInputAnswerValue] = useState('')
   const [completedChallenges, setCompletedChallenges] = useState(0)
 
-    const digitInputRef = useRef(null);
+    const digitInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchRows()
@@ -33,7 +33,7 @@ export default function MappingsPage() {
         setDisplayEmail('Not logged in')
       }
       else {
-        setDisplayEmail(user.email ?? "")
+        setDisplayEmail(user.email ?? "<no email>")
       }
     }
 
@@ -93,7 +93,7 @@ export default function MappingsPage() {
       setDigitInputValue('')
       setDescriptionInputValue('')
       fetchRows()
-        if(digitInputRef != null) {
+        if(digitInputRef.current != null) {
           digitInputRef.current.focus()
         }
     }
