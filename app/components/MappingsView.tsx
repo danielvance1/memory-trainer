@@ -5,9 +5,10 @@ import ScrollingMappingBubbleDisplay from "./ScrollingMappingBubbleDisplay"
 
 type MappingsViewProps = {
     mappings: Record<string,string>
+    setDescription: (digits: string, description: string) => Promise<void>;
 }
 
-export default function MappingsView({mappings}: MappingsViewProps) {
+export default function MappingsView({mappings, setDescription}: MappingsViewProps) {
     const [inEditMode, setInEditMode] = useState(false)
     const [selectedMappingDigits, setSelectedMappingDigits] = useState("")
 
@@ -29,7 +30,7 @@ export default function MappingsView({mappings}: MappingsViewProps) {
                 Digit Mappings
             </div>
             <ScrollingMappingBubbleDisplay mappings={mappings} setSelectedMappingDigits={safeSetSelectedMappingDigits} />
-            <MappingEditor setInEditMode={setInEditMode} 
+            <MappingEditor setDescription={async (description: string) => setDescription(selectedMappingDigits, description)} 
                            inEditMode={inEditMode} 
                            selectedMappingDigits={selectedMappingDigits}
                            mappings={mappings} />

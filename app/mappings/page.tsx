@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { setMappingDescription } from '@/lib/mappings'
 import MappingBubble from "../components/MappingBubble"
 import SingleDigitMappingBubbleContainer from '../components/SingleDigitMappingBubbleContainer'
 import DoubleDigitMappingBubbleContainer from '../components/DoubleDigitMappingBubbleContainer'
@@ -124,10 +125,24 @@ export default function MappingsPage() {
     }
   }
 
+  async function setDescription(digits: string, description: string) {
+    const digitsRegex = /^\d{1,3}$/;
+
+    if(digits == null || 
+       !digitsRegex.test(digits) ||
+       description == null) return
+
+    const result: boolean = await setMappingDescription(digits, description)
+
+    if(result){
+      await fetchRows()
+    }
+  }
+
   return (
     <div className="grid grid-cols-[1fr_1fr] h-screen w-full">
       <div></div>
-      <MappingsView mappings={digitsDescriptionMappings} />
+      <MappingsView mappings={digitsDescriptionMappings} setDescription={setDescription} />
       {/* <MappingEditor mappings={digitsDescriptionMappings}/> */}
     </div>
   )

@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 
-async function deleteMapping(digits: string) : Promise<boolean> {
+export async function deleteMapping(digits: string) : Promise<boolean> {
     const { error } = await supabase
         .from('mappings')
         .delete()
@@ -12,10 +12,10 @@ async function deleteMapping(digits: string) : Promise<boolean> {
     } else return true
 }
 
-async function setMappingDescription(digits: string, description: string) : Promise<boolean> {
+export async function setMappingDescription(digits: string, description: string) : Promise<boolean> {
     const { error } = await supabase
         .from('mappings')
-        .insert({ digits: digits, description: description })
+        .upsert({ digits: digits, description: description }, { onConflict: 'user_id,digits'})
 
     if (error) {
         console.error('Error inserting:', error)

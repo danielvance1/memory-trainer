@@ -4,18 +4,18 @@ import TextField from "./TextField"
 type MappingEditorProps = {
     inEditMode : boolean
     selectedMappingDigits : string
-    setInEditMode: (inEditMode: boolean) => void;
     mappings: Record<string,string>
+    setDescription: (description: string) => Promise<void>;
 }
 
-export default function MappingEditor({ inEditMode, selectedMappingDigits, setInEditMode, mappings }: MappingEditorProps) {
+export default function MappingEditor({ inEditMode, selectedMappingDigits, mappings, setDescription }: MappingEditorProps) {
     const selectedMappingDescription = mappings[selectedMappingDigits]
     
     
     return (
-        <div className="grid grid-cols-3 aspect-3/1 w-full gap-4">
-            <div className="col-start-1 col-span-2 aspect-2/1">
-                <TextField currentText={selectedMappingDescription} setText={()=>{}}/>
+        <div className="grid grid-cols-[1fr_1fr_auto] gap-4 aspect-3/1 w-full min-w-0">
+            <div className="col-start-1 col-span-2">
+                <TextField currentText={selectedMappingDescription} setText={setDescription}/>
             </div>
             {/* <div onClick={() => setInEditMode(false)} className="bg-amber-600">Exit edit mode</div> */}
             <div className="bg-neutral-1000
