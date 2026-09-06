@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import MappingBubble from "../components/MappingBubble"
+import SingleDigitMappingBubbleContainer from '../components/SingleDigitMappingBubbleContainer'
+import DoubleDigitMappingBubbleContainer from '../components/DoubleDigitMappingBubbleContainer'
+import ScrollingMappingBubbleDisplay from '../components/ScrollingMappingBubbleDisplay'
+import MappingEditor from '../components/MappingEditor'
+import MappingsView from '../components/MappingsView'
 
 type Row = {
   id: number
@@ -18,7 +24,8 @@ export default function MappingsPage() {
   const [digitChallengeCorrectAnswer, setDigitChallengeCorrectAnswer] = useState('')
   const [inputAnswerValue, setInputAnswerValue] = useState('')
   const [completedChallenges, setCompletedChallenges] = useState(0)
-
+  const [digitsDescriptionMappings, setDigitsDescriptionMappings] = useState<Record<string, string>>({})
+  const [editedDigits, setEditedDigits] = useState('')
     const digitInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -47,7 +54,7 @@ export default function MappingsPage() {
                 return
             }
 
-            let randIdx: number = randBetween(0, rows.length-1)
+            const randIdx: number = randBetween(0, rows.length-1)
 
             console.log(`randIdx: ${randIdx}`)
 
@@ -75,6 +82,11 @@ export default function MappingsPage() {
       console.error('Error fetching:', error)
     } else {
       setRows(data as Row[])
+      const newMappings: Record<string, string> = {}
+      data.forEach((row) => {
+        newMappings[row.digits] = row.description
+      })
+      setDigitsDescriptionMappings(newMappings)
     }
   }
 
@@ -113,75 +125,10 @@ export default function MappingsPage() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-        <div style={{ padding: '2rem' }}>
-            <p>{displayEmail}</p>
-            <h1>Add a new mapping</h1>
-
-            <form onSubmit={handleSubmit}>
-                <input
-                ref={digitInputRef}
-                value={digitInputValue}
-                onChange={(e) => setDigitInputValue(e.target.value)}
-                placeholder="Enter digits"
-                />
-                <input
-                value={descriptionInputValue}
-                onChange={(e) => {
-                        setDescriptionInputValue(e.target.value)
-                    }
-                }
-                placeholder="Enter description"
-                />
-                <button type="submit">Add</button>
-            </form>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Digits</th>
-                        <th>Description</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row) => (
-                        <tr key={row.id}>
-                            <td>{row.digits}</td>
-                            <td>{row.description}</td>
-                            <td>
-                                <button onClick={() => handleDelete(row.id)} className="border border-purple-200 text-purple-600 rounded px-3 py-1 hover:border-transparent hover:bg-purple-600 hover:text-white active:bg-purple-700">
-                                    delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-        <div className="h-full grid grid-rows-2 grid-columns-1">
-            <div className="bg-red-500">
-                Number: {digitChallengeValue}
-            </div>
-            <div className="bg-blue-500">
-                <div>
-                    Score: {completedChallenges}
-                </div>
-                <input
-                    value={inputAnswerValue}
-                    onChange={(e) => {
-                        setInputAnswerValue(e.target.value)
-                        if(digitChallengeValue != "" && 
-                            e.target.value.length>0 &&
-                            e.target.value[0] == digitChallengeCorrectAnswer[0]){
-                            setInputAnswerValue('')
-                            setCompletedChallenges(completedChallenges+1)
-                        }
-                    }}
-                    placeholder="Enter number description"
-                />
-            </div>
-        </div>
+    <div className="grid grid-cols-[1fr_1fr] h-screen w-full">
+      <div></div>
+      <MappingsView mappings={digitsDescriptionMappings} />
+      {/* <MappingEditor mappings={digitsDescriptionMappings}/> */}
     </div>
   )
 }

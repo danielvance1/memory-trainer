@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@utility border-module {
+  border-width: 3px;
+  border-color: oklch(27.9% 0.077 45.635);/* oklch(55.5% 0.163 48.998); */
+  border-style: solid;
+}
+
+@utility awesome-text {
+  background-image: linear-gradient(to bottom, white, var(--color-gray-500));
+  background-clip: text;
+  color: transparent;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
