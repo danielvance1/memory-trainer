@@ -4,6 +4,7 @@
   border-width: 3px;
   border-color: oklch(27.9% 0.077 45.635);/* oklch(55.5% 0.163 48.998); */
   border-style: solid;
+  border-radius: 15;
 }
 
 @utility awesome-text {
@@ -22,6 +23,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* State-specific bubble colors */
+  --color-bubble-unset: oklch(37.3% 0.034 259.733);
+  --color-bubble-unset-hover: oklch(44.6% 0.03 256.802);
+
+  --color-bubble-set: oklch(52.7% 0.154 150.069);
+  --color-bubble-set-hover: oklch(62.7% 0.194 149.214);
+
+  --color-bubble-edited: oklch(55.4% 0.135 66.442);
+  --color-bubble-edited-hover: oklch(68.1% 0.162 75.834);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -1,14 +1,21 @@
 import MappingBubble from "./MappingBubble"
+import { BubbleState } from "../types"
+import { memo, useState } from "react"
 
 type BubbleGroupProps = {
     first: number
     last: number
     length: number
-    mappings: Record<string, string>
-    setSelectedMappingDigits: (digits: string) => void;
+    alertOnBubbleClicked: (digits: string) => void;
+    registerBubble?: (
+        digits: string, 
+        setBubbleState: (bubbleState: BubbleState) => void
+    ) => void
 }
 
-export default function BubbleGroup({ first, last, length, mappings, setSelectedMappingDigits }: BubbleGroupProps) {    
+function BubbleGroup({ first, last, length, alertOnBubbleClicked, registerBubble }: BubbleGroupProps) {    
+    const [isOpen, setIsOpen] = useState(false)
+
     const digitsList: string[] = Array.from(
         { length: last-first+1 },
         (_, index) => {
@@ -28,21 +35,26 @@ export default function BubbleGroup({ first, last, length, mappings, setSelected
                             text-[8cqw]
                             text-gray
                             bg-background
-                            sticky top-0">
+                            sticky top-0"
+                 onClick={() => setIsOpen(!isOpen)}>
                 <span className="awesome-text">
                     {(digitsList[0]?.toString() ?? "") + "-" + (digitsList.at(-1)?.toString() ?? "")}
                 </span>
             </div>
-            <div className='grid grid-cols-10 place-items-center gap-1'>
-                {digitsList.map((digits) => (
-                    <MappingBubble
-                        key={digits}
-                        digits={digits}
-                        description={mappings[digits]}
-                        setSelectedMappingDigits = {setSelectedMappingDigits}
-                    />
-                ))}
-            </div>
+            {isOpen && 
+                <div className='grid grid-cols-10 place-items-center gap-1'>
+                    {digitsList.map((digits) => (
+                        <MappingBubble
+                            key={digits}
+                            digits={digits}
+                            alertOnClick = {alertOnBubbleClicked}
+                            registerBubble = {registerBubble}
+                        />
+                    ))}
+                </div>
+            }
         </div>
     )
 }
+
+export default memo(BubbleGroup)

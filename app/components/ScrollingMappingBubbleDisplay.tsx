@@ -1,14 +1,18 @@
-import SingleDigitMappingBubbleContainer from "./SingleDigitMappingBubbleContainer"
-import DoubleDigitMappingBubbleContainer from "./DoubleDigitMappingBubbleContainer"
-import TripleDigitMappingBubbleContainer from "./TripleDigitMappingBubbleDisplay"
 import BubbleGroup from "./BubbleGroup"
+import { BubbleState } from "../types"
+import { memo } from "react"
 
 type ScrollingMappingBubbleDisplayProps = {
-    mappings: Record<string, string>
     setSelectedMappingDigits: (digits: string) => void;
+    registerBubble?: (
+        digits: string, 
+        setBubbleState: (bubbleState: BubbleState) => void
+    ) => void
 }
 
-export default function ScrollingMappingBubbleDisplay({ mappings, setSelectedMappingDigits }: ScrollingMappingBubbleDisplayProps) {    
+function ScrollingMappingBubbleDisplay({ setSelectedMappingDigits, registerBubble }: ScrollingMappingBubbleDisplayProps) {    
+    console.log("scrolling component rendered")
+
     const starts: number[] = Array.from(
         { length: 10 },
         (_, index) => {
@@ -28,26 +32,24 @@ export default function ScrollingMappingBubbleDisplay({ mappings, setSelectedMap
             <BubbleGroup first={0} 
                          last={9} 
                          length={1}
-                         mappings={mappings} 
-                         setSelectedMappingDigits={setSelectedMappingDigits}/>
+                         alertOnBubbleClicked={setSelectedMappingDigits}
+                         registerBubble={registerBubble}/>
             <BubbleGroup first={0} 
                          last={99} 
                          length={2}
-                         mappings={mappings} 
-                         setSelectedMappingDigits={setSelectedMappingDigits}/>
-            
-            {/* <SingleDigitMappingBubbleContainer mappings={mappings} setSelectedMappingDigits={setSelectedMappingDigits} /> */}
-            {/* <DoubleDigitMappingBubbleContainer mappings={mappings} setSelectedMappingDigits={setSelectedMappingDigits} /> */}
+                         alertOnBubbleClicked={setSelectedMappingDigits}
+                         registerBubble={registerBubble}/>
+
             {starts.map((start) => (
                 <BubbleGroup key={start}
                              first={start} 
                              last={start+99} 
                              length={3}
-                             mappings={mappings} 
-                             setSelectedMappingDigits={setSelectedMappingDigits}/>
+                             alertOnBubbleClicked={setSelectedMappingDigits}
+                             registerBubble={registerBubble}/>
             ))}
-            
-            {/* <TripleDigitMappingBubbleContainer mappings={mappings} setSelectedMappingDigits={setSelectedMappingDigits} /> */}
         </div>
     )
 }
+
+export default memo(ScrollingMappingBubbleDisplay)

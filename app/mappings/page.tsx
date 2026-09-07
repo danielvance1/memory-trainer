@@ -1,149 +1,88 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
-import { setMappingDescription } from '@/lib/mappings'
-import MappingBubble from "../components/MappingBubble"
-import SingleDigitMappingBubbleContainer from '../components/SingleDigitMappingBubbleContainer'
-import DoubleDigitMappingBubbleContainer from '../components/DoubleDigitMappingBubbleContainer'
-import ScrollingMappingBubbleDisplay from '../components/ScrollingMappingBubbleDisplay'
-import MappingEditor from '../components/MappingEditor'
+import { BubbleState } from '../types'
 import MappingsView from '../components/MappingsView'
-
-type Row = {
-  id: number
-  digits: string
-  description: string
-}
+import MappingBubble from '../components/MappingBubble'
+import BubbleGroupPreview from '../components/BubbleGroupPreview'
+import { BubbleGroupPreviewProps } from '../components/BubbleGroupPreview'
 
 export default function MappingsPage() {
-  const [rows, setRows] = useState<Row[]>([])
-  const [digitInputValue, setDigitInputValue] = useState('')
-  const [descriptionInputValue, setDescriptionInputValue] = useState('')
-  const [displayEmail, setDisplayEmail] = useState('Loading...')
-  const [digitChallengeValue, setDigitChallengeValue] = useState('')
-  const [digitChallengeCorrectAnswer, setDigitChallengeCorrectAnswer] = useState('')
-  const [inputAnswerValue, setInputAnswerValue] = useState('')
-  const [completedChallenges, setCompletedChallenges] = useState(0)
-  const [digitsDescriptionMappings, setDigitsDescriptionMappings] = useState<Record<string, string>>({})
-  const [editedDigits, setEditedDigits] = useState('')
-    const digitInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    fetchRows()
-  }, [])
+  // const digitsRegex = /^\d{1,3}$/;
+  // function isValidDigitSequence(digits: string) {
+  //   return digits != null && digitsRegex.test(digits)
+  // }
 
-  useEffect(() => {
-    async function loadUserDisplay() {
-      const { data: { user } } = await supabase.auth.getUser()
+  // const bubbleControllers: useRef<Record<string, (bubbleState: BubbleState) => void>> = ({})
+  // function registerBubble(digits: string, setBubbleState: (bubbleState: BubbleState) => void) {
+  //   if(isValidDigitSequence(digits)){
+  //     bubbleControllers[digits] = setBubbleState;
+  //   }
+  // }
 
-      if (user === null || user.email === null) {
-        setDisplayEmail('Not logged in')
-      }
-      else {
-        setDisplayEmail(user.email ?? "<no email>")
-      }
-    }
-
-    loadUserDisplay()
-  }, [])
-
-    useEffect(() => {
-        async function getDigitChallenge() {
-            if(rows===null || rows.length == 0) {
-                console.log("rows had no values")
-                return
-            }
-
-            const randIdx: number = randBetween(0, rows.length-1)
-
-            console.log(`randIdx: ${randIdx}`)
-
-            setDigitChallengeValue(rows[randIdx].digits)
-            setDigitChallengeCorrectAnswer(rows[randIdx].description)
+    const testData: boolean[] = Array.from(
+        { length: 100 },
+        (_, index) => {
+            return Math.floor(index*113/10) % 2 == 0
         }
+    )
 
-        getDigitChallenge()
-    }, [completedChallenges, rows])
-
-    function randBetween(lo: number, hi: number) : number {
-        lo = Math.floor(lo)
-        hi = Math.floor(hi)
-
-        if(lo>hi){
-            return lo
-        }
-
-        return Math.floor(Math.random() * (hi - lo + 1)) + lo
+    const bubbleGroupPreviewPropsList: BubbleGroupPreviewProps[] = []
+    bubbleGroupPreviewPropsList.push({
+        first: 0,
+        bubbleCount: 10,
+        significantDigits: 1,
+        bubbleStates: testData
+    })
+    bubbleGroupPreviewPropsList.push({
+        first: 0,
+        bubbleCount: 100,
+        significantDigits: 2,
+        bubbleStates: testData
+    })
+    for(let i = 0; i < 10; i++){
+        bubbleGroupPreviewPropsList.push({
+            first: i*100,
+            bubbleCount: 100,
+            significantDigits: 3,
+            bubbleStates: testData
+        })
     }
+    
+    
 
-  async function fetchRows() {
-    const { data, error } = await supabase.from('mappings').select('*')
-    if (error) {
-      console.error('Error fetching:', error)
-    } else {
-      setRows(data as Row[])
-      const newMappings: Record<string, string> = {}
-      data.forEach((row) => {
-        newMappings[row.digits] = row.description
-      })
-      setDigitsDescriptionMappings(newMappings)
-    }
-  }
+    return (
+        // <div className="aspect-1/3 bg-red-50 h-screen">
+        //     {/* <div className="awesome-text">Edit mappings</div>
+        //     <div className="w-grid grid-cols-[1fr_1fr_1fr] grid-rows-[1fr_1fr_1fr_1fr]">
+        //         {squareIds.map(id => (
+        //             <div key={id} className="aspect-square bg-amber-700">
+        //                 {id}
+        //             </div>
+        //         ))}
+        //     </div> */}
+        // </div>
+        // <MappingsView />
+        // <div className="grid grid-cols-[1fr] h-screen w-full bg-amber-50">
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-
-    console.log(`attempting to submit digits=${digitInputValue} and description=${descriptionInputValue}`)
-
-    const { error } = await supabase
-      .from('mappings')
-      .insert({ digits: digitInputValue, description: descriptionInputValue })
-
-    if (error) {
-      console.error('Error inserting:', error)
-    } else {
-      setDigitInputValue('')
-      setDescriptionInputValue('')
-      fetchRows()
-        if(digitInputRef.current != null) {
-          digitInputRef.current.focus()
-        }
-    }
-  }
-
-  async function handleDelete(rowId: number){
-    const { error } = await supabase
-      .from('mappings')
-      .delete()
-      .eq('id', rowId)
-
-    if (error) {
-      console.error('Error deleting:', error)
-    } else {
-      fetchRows()
-    }
-  }
-
-  async function setDescription(digits: string, description: string) {
-    const digitsRegex = /^\d{1,3}$/;
-
-    if(digits == null || 
-       !digitsRegex.test(digits) ||
-       description == null) return
-
-    const result: boolean = await setMappingDescription(digits, description)
-
-    if(result){
-      await fetchRows()
-    }
-  }
-
-  return (
-    <div className="grid grid-cols-[1fr_1fr] h-screen w-full">
-      <div></div>
-      <MappingsView mappings={digitsDescriptionMappings} setDescription={setDescription} />
-      {/* <MappingEditor mappings={digitsDescriptionMappings}/> */}
-    </div>
-  )
+        // </div>
+        <div className="w-full h-screen flex items-center justify-center">
+            <div className="w-[min(100vw,calc(100vh*9/13))] h-[min(100vh,calc(100vw*13/9))] p-3">
+                <div className="border-module grid grid-rows-[1fr_12fr] h-full w-full @container">
+                    <div className="awesome-text m-1 text-[7cqw] bg-amber-50 flex justify-center items-center">Click group to expand</div>
+                    <div className="grid grid-rows-4 grid-cols-3 gap-[3cqw] p-[3cqw]">
+                        {bubbleGroupPreviewPropsList.map((props, index) => (
+                            <div key={index}>
+                                <BubbleGroupPreview 
+                                    first={props.first}
+                                    bubbleCount={props.bubbleCount}
+                                    significantDigits={props.significantDigits}
+                                    bubbleStates={testData}/>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }

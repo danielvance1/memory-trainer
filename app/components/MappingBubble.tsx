@@ -1,17 +1,34 @@
+import { BubbleState } from "../types"
+import { useState, useEffect, memo } from "react"
+
 type MappingBubbleProps = {
     digits: string
-    description?: string
-    setSelectedMappingDigits: (digits: string) => void;
+    alertOnClick?: (digits: string) => void;
+    registerBubble?: (
+        digits: string, 
+        setBubbleState: (bubbleState: BubbleState) => void
+    ) => void
 }
 
-export default function MappingBubble({digits, description, setSelectedMappingDigits }: MappingBubbleProps) {
-    const hasDescription = description != null && description.length > 0
+function MappingBubble({digits, alertOnClick, registerBubble }: MappingBubbleProps) {
+    const [bubbleState, setBubbleState] = useState(BubbleState.Unset)
+
+    const stateSpecificStyles: Record<BubbleState, string> = {
+        [BubbleState.Unset]: "bg-bubble-unset hover:bg-bubble-unset-hover",
+        [BubbleState.Set]: "bg-bubble-set hover:bg-bubble-set-hover",
+        [BubbleState.Edited]: "bg-bubble-edited hover:bg-bubble-edited-hover"
+    }
+
+    useEffect(() => {
+        registerBubble?.(digits,setBubbleState)
+    }, [digits, registerBubble])
 
     return (
-        <div className="w-full aspect-square @container">
-            <div onClick={() => setSelectedMappingDigits(digits)}
-                className={`${hasDescription ? "bg-green-700 hover:bg-green-600" : "bg-gray-700 hover:bg-gray-600"} transition-colors duration-100 ease-in-out
-                            w-full aspect-square
+        <div className={`h-full w-full @container`}>
+            <div onClick={() => alertOnClick?.(digits)}
+                className={`${stateSpecificStyles[bubbleState]} 
+                            transition-colors duration-100 ease-in-out
+                            w-full h-full
                             rounded-[10cqw]
                             grid place-items-center 
                             select-none
@@ -23,3 +40,5 @@ export default function MappingBubble({digits, description, setSelectedMappingDi
         </div>
     )
 }
+
+export default memo(MappingBubble)

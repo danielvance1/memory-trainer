@@ -1,11 +1,10 @@
 type TextFieldProps = {
     currentText?: string
-    setText: (digits: string) => Promise<void>;
 }
 
-export default function TextField({ currentText, setText }: TextFieldProps) {
+export default function TextField({ currentText }: TextFieldProps) {
     return (
-        <form onSubmit={async (e) => setText(e.target.value)}>
+        <form>
             <input className="h-full w-full focus:outline-hidden
                           rounded-2xl 
                           border-module
