@@ -13,7 +13,15 @@
   background-clip: text;
   color: transparent; */
   font-weight: 600;
-  color: gray;
+  color: oklch(51.1% 0.262 276.966);
+}
+
+@utility glow-text {
+  text-shadow:
+    0 0 4px oklch(35.9% 0.144 278.697),
+    0 0 12px oklch(35.9% 0.144 278.697),
+    0 0 24px oklch(35.9% 0.144 278.697),
+    0 0 48px oklch(35.9% 0.144 278.697);
 }
 
 :root {

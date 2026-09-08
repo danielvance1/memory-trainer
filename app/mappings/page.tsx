@@ -1,12 +1,14 @@
 'use client'
 
-import { BubbleState } from '../types'
-import MappingsView from '../components/MappingsView'
-import MappingBubble from '../components/MappingBubble'
+
+import { motion } from 'framer-motion'
+import { useState } from 'react'
 import BubbleGroupPreview from '../components/BubbleGroupPreview'
 import { BubbleGroupPreviewProps } from '../components/BubbleGroupPreview'
 
 export default function MappingsPage() {
+    const [hyperFocus, setHyperFocus] = useState(false)
+
 
   // const digitsRegex = /^\d{1,3}$/;
   // function isValidDigitSequence(digits: string) {
@@ -68,18 +70,35 @@ export default function MappingsPage() {
         // </div>
         <div className="w-full h-dvh flex items-center justify-center">
             <div className="w-[min(100vw,calc(100vh*9/13))] h-[min(100vh,calc(100vw*13/9))] p-3">
-                <div className="border-module grid grid-rows-[1fr_12fr] h-full w-full @container">
-                    <div className="awesome-text m-1 text-[7cqw] flex justify-center items-center">Click group to expand</div>
+                <div className="border-module border-amber-600 grid grid-rows-[1fr_12fr] h-full w-full @container">
+                    <div className="awesome-text m-1 text-[7cqw] flex justify-center items-center glow-text">Click group to expand</div>
                     <div className="grid grid-rows-4 grid-cols-3 gap-[3cqw] p-[3cqw]">
-                        {bubbleGroupPreviewPropsList.map((props, index) => (
-                            <div key={index}>
-                                <BubbleGroupPreview 
-                                    first={props.first}
-                                    bubbleCount={props.bubbleCount}
-                                    significantDigits={props.significantDigits}
-                                    bubbleStates={testData}/>
-                            </div>
-                        ))}
+                        {bubbleGroupPreviewPropsList.map((props, index) => {
+                            const row = Math.floor(index/3) + 1
+                            const col = index%3+1
+
+                            return (
+                                <div key={index}
+                                     className="hover:z-10"
+                                     onMouseEnter={() => setHyperFocus(true)}
+                                     onMouseLeave={() => setHyperFocus(false)}
+                                    style={{
+                                        gridRowStart: row,
+                                        gridRowEnd: row+1,
+                                        gridColumnStart: col,
+                                        gridColumnEnd: col+1
+                                    }}>
+                                    <BubbleGroupPreview 
+                                        first={props.first}
+                                        bubbleCount={props.bubbleCount}
+                                        significantDigits={props.significantDigits}
+                                        bubbleStates={testData}/>
+                                </div>
+                            )
+                        })}
+                        <div className={`${hyperFocus ? "opacity-80" : "opacity-0"} transition-opacity duration-800 bg-background col-start-1 col-end-4 row-start-1 row-end-5 pointer-events-none z-0`}>
+                            
+                        </div>
                     </div>
                 </div>
             </div>
