@@ -69,7 +69,7 @@ export default function MappingsPage() {
         <div className="w-full h-dvh flex items-center justify-center">
             <div className="w-[min(100vw,calc(100vh*9/13))] h-[min(100vh,calc(100vw*13/9))] p-3">
                 <div className="border-module grid grid-rows-[1fr_12fr] h-full w-full @container">
-                    <div className="awesome-text m-1 text-[7cqw] bg-amber-50 flex justify-center items-center">Click group to expand</div>
+                    <div className="awesome-text m-1 text-[7cqw] flex justify-center items-center">Click group to expand</div>
                     <div className="grid grid-rows-4 grid-cols-3 gap-[3cqw] p-[3cqw]">
                         {bubbleGroupPreviewPropsList.map((props, index) => (
                             <div key={index}>

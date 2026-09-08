@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 @utility border-module {
@@ -8,9 +9,11 @@
 }
 
 @utility awesome-text {
-  background-image: linear-gradient(to bottom, white, var(--color-gray-500));
+  /* background-image: linear-gradient(to bottom, white, var(--color-gray-500));
   background-clip: text;
-  color: transparent;
+  color: transparent; */
+  font-weight: 600;
+  color: gray;
 }
 
 :root {
@@ -21,7 +24,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  /* --font-sans: var(--font-geist-sans); */
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 
   /* State-specific bubble colors */
@@ -45,5 +49,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
