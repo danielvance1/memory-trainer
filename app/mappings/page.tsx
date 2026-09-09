@@ -94,7 +94,7 @@ export default function MappingsPage() {
                                 <motion.div key={index}
                                      layout
                                      transition={{ duration: 0.3, ease: 'easeInOut'}}
-                                     className="hover:z-10"
+                                     className="hover:z-10 cursor-pointer"
                                      onMouseEnter={() => setHyperFocus(true)}
                                      onMouseLeave={() => setHyperFocus(false)}
                                      onClick={() => setExpandedIdx(index)}
