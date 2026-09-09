@@ -10,6 +10,8 @@ export type BubbleGroupPreviewProps = {
 }
 
 function BubbleGroupPreview({ first, bubbleCount, significantDigits, bubbleStates }: BubbleGroupPreviewProps) {
+    const [expanded, setExpanded] = useState(false);
+
     let displayFirst = first.toString()
     let displayLast = (first+bubbleCount-1).toString()
 
@@ -22,7 +24,7 @@ function BubbleGroupPreview({ first, bubbleCount, significantDigits, bubbleState
 
     function generateDotGridSVG(bubbleStates: boolean[]) {
         const cellSize = 10
-        const dotRadius = cellSize * 0.35
+        const dotRadius = cellSize * 0.45
 
         const circles = bubbleStates.map((isGreen, i) => {
             const col = i%10
@@ -45,7 +47,8 @@ function BubbleGroupPreview({ first, bubbleCount, significantDigits, bubbleState
     const testPercentage = 0.4
 
     return (
-        <div className="h-full w-full @container">
+        <div className={`h-full w-full @container`}
+             onClick={() => setExpanded(true)}>
             <div className={`transition-colors duration-200 ease-in-out
                             w-full h-full
                             rounded-[10cqw]
@@ -64,8 +67,11 @@ function BubbleGroupPreview({ first, bubbleCount, significantDigits, bubbleState
                     <div className="bg-indigo-950/80 col-start-1 row-start-1 w-full rounded-r-[7cqw]"></div>
                     <div className="bg-background/80 col-start-2 row-start-1 w-full"></div>
                     <div className="grid col-start-1 col-end-3 row-start-1 place-items-center
-                                    awesome-text text-[20cqw] w-full h-full hover:opacity-0 transition-opacity duration-0  glow-text">
-                        {title}
+                                    w-full h-full hover:opacity-0 transition-opacity duration-0">
+                        <div>
+                            <span className="awesome-text text-[20cqw] glow-text">{displayFirst}</span>
+                            <span className="text-[20cqw] text-gray-500">{"-" + displayLast}</span>
+                        </div>
                     </div>
                 </div>
             </div>

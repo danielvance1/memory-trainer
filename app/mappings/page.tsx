@@ -8,6 +8,7 @@ import { BubbleGroupPreviewProps } from '../components/BubbleGroupPreview'
 
 export default function MappingsPage() {
     const [hyperFocus, setHyperFocus] = useState(false)
+    const [expandedIdx, setExpandedIdx] = useState(-1)
 
 
   // const digitsRegex = /^\d{1,3}$/;
@@ -51,7 +52,12 @@ export default function MappingsPage() {
         })
     }
     
-    
+    const expandedPosition = {
+        gridRowStart: 1,
+        gridRowEnd: 4,
+        gridColumnStart: 1,
+        gridColumnEnd: 4
+    }
 
     return (
         // <div className="aspect-1/3 bg-red-50 h-screen">
@@ -77,23 +83,28 @@ export default function MappingsPage() {
                             const row = Math.floor(index/3) + 1
                             const col = index%3+1
 
+                            const startPosition = {
+                                gridRowStart: row,
+                                gridRowEnd: row+1,
+                                gridColumnStart: col,
+                                gridColumnEnd: col+1
+                            }
+
                             return (
-                                <div key={index}
+                                <motion.div key={index}
+                                     layout
+                                     transition={{ duration: 0.3, ease: 'easeInOut'}}
                                      className="hover:z-10"
                                      onMouseEnter={() => setHyperFocus(true)}
                                      onMouseLeave={() => setHyperFocus(false)}
-                                    style={{
-                                        gridRowStart: row,
-                                        gridRowEnd: row+1,
-                                        gridColumnStart: col,
-                                        gridColumnEnd: col+1
-                                    }}>
+                                     onClick={() => setExpandedIdx(index)}
+                                    style={expandedIdx==index ? { ...expandedPosition } : { ...startPosition }}>
                                     <BubbleGroupPreview 
                                         first={props.first}
                                         bubbleCount={props.bubbleCount}
                                         significantDigits={props.significantDigits}
                                         bubbleStates={testData}/>
-                                </div>
+                                </motion.div>
                             )
                         })}
                         <div className={`${hyperFocus ? "opacity-80" : "opacity-0"} transition-opacity duration-800 bg-background col-start-1 col-end-4 row-start-1 row-end-5 pointer-events-none z-0`}>
